@@ -1,0 +1,39 @@
+# CustormWispeFlow - configuracio
+hotkey = "f8"            # tecla per comencar/aturar (o mantenir, si mode = "hold")
+                         # alternatives sense conflictes: "pause", "ctrl+shift+space"
+undo_hotkey = "f9"       # desfer l'ultima insercio (nomes si la finestra es la mateixa)
+mode = "toggle"          # "toggle" o "hold"
+language = "ca"          # idioma inicial: ca, es, en
+
+threads = 4              # fils de CPU per a Whisper
+compute_type = "int8"    # int8 es el mes rapid en CPU
+beam_size = 1            # 1 = mes rapid
+vad = true               # retalla silenci abans de transcriure
+max_seconds = 60.0       # durada maxima d'una dictada
+
+insert_mode = "auto"     # "type" (SendInput), "paste" (porta-retalls) o "auto"
+paste_threshold = 120    # amb "auto", a partir de quants caracters fer servir el porta-retalls
+restore_clipboard = true # restaura el contingut anterior del porta-retalls
+beeps = true             # senyals sonors d'inici/final
+history_max_lines = 2000 # retalla history.jsonl en arrencar; 0 = sense limit
+theme = "dark"           # "dark" o "light"
+# device = "Micròfon (USB PnP Audio Device)"   # nom o index; buit = per defecte
+
+# Modes de veu
+spelling_auto = true     # detecta sigles: "u erre ele" -> "URL"
+spelling_uppercase = true
+spelling_separator = ""  # separador entre lletres; "" = cap
+
+[models]
+ca = "Jarbas/faster-whisper-small-ca-cv13"
+es = "base"
+en = "Systran/faster-whisper-base"
+
+[initial_prompts]
+ca = "Transcripció en català amb puntuació i majúscules correctes. Ordres de veu: signes de puntuació, lletra a lletra, mode normal. Noms de lletra: a, be, ce, de, e, efa, ge, hac, i, jota, ca, ela, ema, ena, o, pe, cu, erra, essa, te, u, ve, xeix, zeta. També es diu erre, ele."
+es = "Transcripción en español con puntuación y mayúsculas correctas. Órdenes: signos de puntuación, letra a letra, modo normal."
+en = "English transcription with correct punctuation and capitalization. Commands: punctuation mode, spell mode, normal mode."
+
+[dictionary]
+# Substitucions despres de transcriure (sense distingir majuscules).
+"addictació" = "dictació"

@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-10-31T13:05:48.827544",
+  "language": "ca",
+  "beam": 1,
+  "compute": "int8",
+  "vad": true,
+  "results": {
+    "small": {
+      "load_s": 6.537,
+      "files": {
+        "ca_01.wav": {
+          "audio_s": 10.37,
+          "latencies_s": [
+            5.219
+          ],
+          "latency_mean_s": 5.219,
+          "rtf": 0.503,
+          "language": "ca (1.00)",
+          "wer": 0.087,
+          "text": "Hola, això és una prova de dictació en català. Vull comprovar l'alatència i la qualitat de la transcripció amb el model local."
+        }
+      },
+      "summary": {
+        "avg_latency_s": 5.219,
+        "avg_rtf": 0.503,
+        "avg_wer": 0.087
+      }
+    }
+  }
+}

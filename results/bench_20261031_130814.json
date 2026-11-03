@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-10-31T13:08:14.308660",
+  "language": "ca",
+  "beam": 5,
+  "compute": "int8",
+  "vad": true,
+  "results": {
+    "Jarbas/faster-whisper-base-ca-cv13": {
+      "load_s": 2.038,
+      "files": {
+        "ca_01.wav": {
+          "audio_s": 10.37,
+          "latencies_s": [
+            1.614
+          ],
+          "latency_mean_s": 1.614,
+          "rtf": 0.156,
+          "language": "ca (1.00)",
+          "wer": 0.087,
+          "text": "Hola, això és una prova d'addictació en català, vull comprovar la latència i la qualitat de la transcripció amb el model local."
+        },
+        "ca_02.wav": {
+          "audio_s": 7.15,
+          "latencies_s": [
+            1.552
+          ],
+          "latency_mean_s": 1.552,
+          "rtf": 0.217,
+          "language": "ca (1.00)",
+          "wer": 0.0,
+          "text": "Demà a les nou del matí hem de revisar el pressupost amb l'Anna i el Jordi, i després enviar-lo al client."
+        },
+        "ca_03.wav": {
+          "audio_s": 6.31,
+          "latencies_s": [
+            1.911
+          ],
+          "latency_mean_s": 1.911,
+          "rtf": 0.303,
+          "language": "ca (1.00)",
+          "wer": 0.2,
+          "text": "Obra el navegador i ves exemple punt com barra documents per descarregar l'informe."
+        }
+      },
+      "summary": {
+        "avg_latency_s": 1.692,
+        "avg_rtf": 0.225,
+        "avg_wer": 0.096
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+Hola, esta es una prueba de dictado en español para medir la latencia y la precisión del sistema.

@@ -1,0 +1,101 @@
+{
+  "timestamp": "2026-10-31T13:04:15.673301",
+  "language": "ca",
+  "beam": 1,
+  "compute": "int8",
+  "vad": true,
+  "results": {
+    "base": {
+      "load_s": 2.165,
+      "files": {
+        "ca_01.wav": {
+          "audio_s": 10.37,
+          "latencies_s": [
+            1.927,
+            2.129
+          ],
+          "latency_mean_s": 2.028,
+          "rtf": 0.196,
+          "language": "ca (1.00)",
+          "wer": 0.217,
+          "text": "Hola, això és una prova d'adictació en català. Vol comprovar la l'atenció i la qualitat de la transcripció amb el model local."
+        },
+        "ca_02.wav": {
+          "audio_s": 7.15,
+          "latencies_s": [
+            1.665,
+            1.416
+          ],
+          "latency_mean_s": 1.54,
+          "rtf": 0.215,
+          "language": "ca (1.00)",
+          "wer": 0.043,
+          "text": "Demà a les 9 del matí hem de revisar el pressupost amb l'Anna i el Jordi i després enviar-lo al client."
+        },
+        "ca_03.wav": {
+          "audio_s": 6.31,
+          "latencies_s": [
+            1.462,
+            1.414
+          ],
+          "latency_mean_s": 1.438,
+          "rtf": 0.228,
+          "language": "ca (1.00)",
+          "wer": 0.533,
+          "text": "Obre el Navagador i veig exemple un combarra de documents per descarregar-li informe."
+        }
+      },
+      "summary": {
+        "avg_latency_s": 1.669,
+        "avg_rtf": 0.213,
+        "avg_wer": 0.264
+      }
+    },
+    "small": {
+      "load_s": 3.735,
+      "files": {
+        "ca_01.wav": {
+          "audio_s": 10.37,
+          "latencies_s": [
+            6.51,
+            5.342
+          ],
+          "latency_mean_s": 5.926,
+          "rtf": 0.572,
+          "language": "ca (1.00)",
+          "wer": 0.087,
+          "text": "Hola, això és una prova de dictació en català. Vull comprovar l'alatència i la qualitat de la transcripció amb el model local."
+        },
+        "ca_02.wav": {
+          "audio_s": 7.15,
+          "latencies_s": [
+            5.709,
+            5.231
+          ],
+          "latency_mean_s": 5.47,
+          "rtf": 0.765,
+          "language": "ca (1.00)",
+          "wer": 0.043,
+          "text": "Demà a les 9 del matí hem de revisar el pressupost amb l'Anna i el Jordi i després enviar-lo al client."
+        },
+        "ca_03.wav": {
+          "audio_s": 6.31,
+          "latencies_s": [
+            5.272,
+            9.112
+          ],
+          "latency_mean_s": 7.192,
+          "rtf": 1.139,
+          "language": "ca (1.00)",
+          "wer": 0.2,
+          "text": "Obre el navegador i ves exemple.com barra documents per descarregar l'informe."
+        }
+      },
+      "summary": {
+        "avg_latency_s": 6.196,
+        "avg_rtf": 0.825,
+        "avg_wer": 0.11
+      }
+    }
+  }
+}

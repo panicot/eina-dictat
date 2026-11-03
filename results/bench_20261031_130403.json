@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-10-31T13:04:03.172493",
+  "language": "ca",
+  "beam": 1,
+  "compute": "int8",
+  "vad": true,
+  "results": {
+    "base": {
+      "load_s": 1.574,
+      "files": {
+        "ca_01.wav": {
+          "audio_s": 10.37,
+          "latencies_s": [
+            2.153
+          ],
+          "latency_mean_s": 2.153,
+          "rtf": 0.208,
+          "language": "ca (1.00)",
+          "wer": 0.217,
+          "text": "Hola, això és una prova d'adictació en català. Vol comprovar la l'atenció i la qualitat de la transcripció amb el model local."
+        }
+      },
+      "summary": {
+        "avg_latency_s": 2.153,
+        "avg_rtf": 0.208,
+        "avg_wer": 0.217
+      }
+    }
+  }
+}

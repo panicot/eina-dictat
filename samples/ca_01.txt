@@ -1,0 +1,1 @@
+Hola, això és una prova de dictació en català. Vull comprovar la latència i la qualitat de la transcripció amb el model local.

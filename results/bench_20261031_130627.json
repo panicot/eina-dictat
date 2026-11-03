@@ -1,0 +1,101 @@
+{
+  "timestamp": "2026-10-31T13:06:27.580464",
+  "language": "ca",
+  "beam": 1,
+  "compute": "int8",
+  "vad": true,
+  "results": {
+    "Jarbas/faster-whisper-base-ca-cv13": {
+      "load_s": 13.329,
+      "files": {
+        "ca_01.wav": {
+          "audio_s": 10.37,
+          "latencies_s": [
+            2.189,
+            1.959
+          ],
+          "latency_mean_s": 2.074,
+          "rtf": 0.2,
+          "language": "ca (1.00)",
+          "wer": 0.087,
+          "text": "Hola, això és una prova d'addictació en català, vull comprovar la latència i la qualitat de la transcripció amb el model local."
+        },
+        "ca_02.wav": {
+          "audio_s": 7.15,
+          "latencies_s": [
+            1.762,
+            1.638
+          ],
+          "latency_mean_s": 1.7,
+          "rtf": 0.238,
+          "language": "ca (1.00)",
+          "wer": 0.0,
+          "text": "Demà a les nou del matí hem de revisar el pressupost amb l'Anna i el Jordi, i després enviar-lo al client."
+        },
+        "ca_03.wav": {
+          "audio_s": 6.31,
+          "latencies_s": [
+            1.533,
+            1.575
+          ],
+          "latency_mean_s": 1.554,
+          "rtf": 0.246,
+          "language": "ca (1.00)",
+          "wer": 0.2,
+          "text": "Obra el navegador i ves exemple punt com barra documents per descarregar l'informe."
+        }
+      },
+      "summary": {
+        "avg_latency_s": 1.776,
+        "avg_rtf": 0.228,
+        "avg_wer": 0.096
+      }
+    },
+    "Jarbas/faster-whisper-small-ca-cv13": {
+      "load_s": 31.999,
+      "files": {
+        "ca_01.wav": {
+          "audio_s": 10.37,
+          "latencies_s": [
+            5.947,
+            4.448
+          ],
+          "latency_mean_s": 5.197,
+          "rtf": 0.501,
+          "language": "ca (1.00)",
+          "wer": 0.0,
+          "text": "Hola, això és una prova de dictació en català.Vull comprovar la latència i la qualitat de la transcripció amb el model local."
+        },
+        "ca_02.wav": {
+          "audio_s": 7.15,
+          "latencies_s": [
+            4.184,
+            4.297
+          ],
+          "latency_mean_s": 4.241,
+          "rtf": 0.593,
+          "language": "ca (1.00)",
+          "wer": 0.0,
+          "text": "Demà a les nou del matí hem de revisar el pressupost amb l'Anna i el Jordi i després enviar-lo al client."
+        },
+        "ca_03.wav": {
+          "audio_s": 6.31,
+          "latencies_s": [
+            5.15,
+            5.122
+          ],
+          "latency_mean_s": 5.136,
+          "rtf": 0.814,
+          "language": "ca (1.00)",
+          "wer": 0.333,
+          "text": "Obre el navegador i ves exempla punt com va a redocuments per descarregar l'informe."
+        }
+      },
+      "summary": {
+        "avg_latency_s": 4.858,
+        "avg_rtf": 0.636,
+        "avg_wer": 0.111
+      }
+    }
+  }
+}
