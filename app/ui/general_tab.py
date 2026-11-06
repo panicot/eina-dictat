@@ -323,7 +323,7 @@ class GeneralTab(QWidget):
         self.device_combo.blockSignals(False)
         if not self._device_items:
             self.device_error.setText(
-                "No s'ha detectat cap micròfon. Comprova la connexió i els permisos de Windows."
+                "No s'ha detectat cap micròfon. Comprova la connexió i els permisos del sistema."
             )
             self.device_error.show()
         else:

@@ -364,6 +364,17 @@ class DictationApp:
             self.hotkeys.add(combo, lambda l=language: self.set_language(l))
         self.hotkeys.add("ctrl+shift+q", self.quit)
 
+    def _start_hotkeys(self) -> bool:
+        try:
+            self.hotkeys.start()
+            return True
+        except Exception as exc:  # noqa: BLE001
+            message = f"No s'han pogut activar els hotkeys: {exc}"
+            self._say(message)
+            self.log.error("hotkeys: %s", exc)
+            self.on_error(message)
+            return False
+
     def start_services(self) -> None:
         """Arrenca hotkeys i carrega el model sense bloquejar la interfície."""
         self.log.info("start version=%s lang=%s model=%s", __version__,
@@ -373,7 +384,7 @@ class DictationApp:
             self._say(f"Historial retallat: {removed} linies antigues.")
             self.log.info("history trimmed removed=%d", removed)
         self._register_hotkeys()
-        self.hotkeys.start()
+        self._start_hotkeys()
         threading.Thread(target=self._preload, args=(self.language,),
                          daemon=True).start()
 
@@ -393,7 +404,7 @@ class DictationApp:
         self.engine.preload(self.language)
 
         self._register_hotkeys()
-        self.hotkeys.start()
+        self._start_hotkeys()
 
         if self.cfg.mode == "hold":
             mode_text = f"mantenir {self.cfg.hotkey.upper()}"
@@ -444,7 +455,7 @@ class DictationApp:
             self.hotkeys.stop()
             self.hotkeys = HotkeyManager()
             self._register_hotkeys()
-            self.hotkeys.start()
+            self._start_hotkeys()
 
         if self.language not in new_cfg.models:
             self.language = new_cfg.language

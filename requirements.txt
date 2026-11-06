@@ -3,7 +3,8 @@ sounddevice>=0.5
 numpy>=1.26
 edge-tts>=7.0
 av>=19.0
-keyboard>=0.13.5
 pyperclip>=1.9
+pynput>=1.7.6; sys_platform == "linux"
+evdev>=1.6; sys_platform == "linux"
 PySide6-Essentials>=6.8
 tomlkit>=0.13

@@ -493,8 +493,8 @@ class HotkeyDialog(QDialog):
         title = QLabel("Prem la tecla o combinació")
         title.setObjectName("cardTitle")
         description = QLabel(
-            "Fes servir F1–F24, una lletra, un número o una combinació amb Ctrl, Alt, Shift o Win. "
-            "Prem Esc per cancel·lar."
+            "Fes servir F1–F24, una lletra, un número o una combinació amb "
+            "Ctrl, Alt, Shift o Super (Win). Prem Esc per cancel·lar."
         )
         description.setObjectName("muted")
         description.setWordWrap(True)
@@ -623,7 +623,7 @@ class MicTestDialog(QDialog):
                 self.description.setText("Prova completada")
                 self.result.setObjectName("warning")
                 self.result.setText(
-                    "No s'ha detectat veu. Comprova el micròfon triat i els permisos de Windows."
+                    "No s'ha detectat veu. Comprova el micròfon triat i els permisos del sistema."
                 )
             style = self.result.style()
             style.unpolish(self.result)

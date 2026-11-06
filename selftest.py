@@ -410,7 +410,7 @@ def test_undo() -> bool:
         foreground=lambda: 123,
         ctrl_z=lambda: calls.append(("ctrl_z",)),
         backspaces=lambda n: calls.append(("backspace", n)),
-        modifiers_down=lambda vk: False,
+        modifiers_down=lambda: False,
     )
 
     ok, _ = undoer.undo(None)
@@ -507,16 +507,17 @@ def test_focus_guard() -> bool:
         failures += 0 if ok else 1
         print(f"  {label}: {'OK' if ok else 'FALLA'}")
 
+    backend = ins._backend
     original = {
-        "foreground_window": ins.foreground_window,
-        "_send": ins._send,
-        "_clipboard_set": ins._clipboard_set,
-        "send_ctrl_v": ins.send_ctrl_v,
-        "type_text": ins.type_text,
-        "paste_text": ins.paste_text,
+        "foreground_window": backend.foreground_window,
+        "_send": backend._send,
+        "_clipboard_set": backend._clipboard_set,
+        "send_ctrl_v": backend.send_ctrl_v,
+        "type_text": backend.type_text,
+        "paste_text": backend.paste_text,
     }
     try:
-        ins.foreground_window = lambda: 999
+        backend.foreground_window = lambda: 999
         try:
             ins.type_text("hola", expected_hwnd=123)
             check("type avorta", False)
@@ -524,16 +525,16 @@ def test_focus_guard() -> bool:
             check("type avorta", exc.chars_written == 0)
 
         sent: list[int] = []
-        ins._send = lambda inputs: sent.append(len(inputs))
-        ins.foreground_window = lambda: 123
+        backend._send = lambda inputs: sent.append(len(inputs))
+        backend.foreground_window = lambda: 123
         check("type amb focus correcte",
               ins.type_text("abc", expected_hwnd=123) == 3)
         check("type envia els caracters", sum(sent) == 6)
 
         calls: list[str] = []
-        ins._clipboard_set = lambda text: True
-        ins.send_ctrl_v = lambda: calls.append("ctrl_v")
-        ins.foreground_window = lambda: 999
+        backend._clipboard_set = lambda text: True
+        backend.send_ctrl_v = lambda: calls.append("ctrl_v")
+        backend.foreground_window = lambda: 999
         try:
             ins.paste_text("hola", restore_clipboard=False, expected_hwnd=123)
             check("paste avorta", False)
@@ -541,7 +542,7 @@ def test_focus_guard() -> bool:
             check("paste avorta", exc.chars_written == 0)
         check("paste no envia Ctrl+V", calls == [])
 
-        ins.foreground_window = lambda: 123
+        backend.foreground_window = lambda: 123
         check("paste amb focus correcte",
               ins.paste_text("hola", restore_clipboard=False,
                              expected_hwnd=123) == 4)
@@ -550,7 +551,7 @@ def test_focus_guard() -> bool:
         def boom(text, expected_hwnd=None):  # noqa: ANN001
             raise ins.InsertAborted(2)
 
-        ins.type_text = boom
+        backend.type_text = boom
         try:
             ins.insert("abc", mode="type", expected_hwnd=123)
             check("insert propaga l'avortament", False)
@@ -558,7 +559,7 @@ def test_focus_guard() -> bool:
             check("insert propaga l'avortament", exc.chars_written == 2)
     finally:
         for name, value in original.items():
-            setattr(ins, name, value)
+            setattr(backend, name, value)
 
     import contextlib
     import io

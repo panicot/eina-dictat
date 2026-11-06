@@ -1,18 +1,20 @@
 """Senyals sonors amb significat.
 
 Cada esdeveniment te un patro de tons propi, de manera que es pot saber l'estat
-sense mirar la pantalla. Els tons s'encuen en un sol fil perque `winsound.Beep`
-es bloquejant: abans cada beep obria un fil i els patrons llargs se solapaven.
+sense mirar la pantalla. Els tons s'encuen en un sol fil perque el reproductor
+de plataforma es bloquejant: abans cada beep obria un fil i els patrons llargs
+se solapaven.
 """
 
 from __future__ import annotations
 
-import sys
 import threading
 import time
 from collections import deque
 from enum import Enum
 from typing import Callable
+
+from app.backends import backend
 
 Tone = tuple[int, int]  # (frequencia Hz, duracio ms)
 Player = Callable[[int, int], None]
@@ -67,12 +69,8 @@ def pattern_for(event: Event) -> tuple[Tone, ...]:
     return PATTERNS[event]
 
 
-def _winsound_beep(frequency: int, duration: int) -> None:
-    if sys.platform != "win32":
-        return
-    import winsound
-
-    winsound.Beep(frequency, duration)
+def _platform_beep(frequency: int, duration: int) -> None:
+    backend.beep(frequency, duration)
 
 
 class Feedback:
@@ -84,7 +82,7 @@ class Feedback:
     def __init__(self, enabled: bool = True,
                  player: Player | None = None) -> None:
         self.enabled = enabled
-        self._player = player or _winsound_beep
+        self._player = player or _platform_beep
         self._events: deque[Event] = deque()
         self._cond = threading.Condition()
         self._running = True

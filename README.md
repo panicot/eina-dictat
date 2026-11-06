@@ -28,10 +28,12 @@ Encara no fa: transcripció en streaming i empaquetat en `.exe`.
 
 ## Requisits
 
-- Windows 10/11 amb micròfon
-- Python 3.13 (no 3.14: `ctranslate2` encara no hi dona suport fiable)
+- Windows 10/11 amb micròfon, o Linux amb X11 o Wayland (GNOME)
+- Python 3.11+ (a Windows s'ha provat amb 3.13; no 3.14: `ctranslate2` encara no hi dona suport fiable)
 
 ## Instal·lació
+
+### Windows
 
 ```powershell
 py -3.13 -m venv .venv
@@ -39,9 +41,132 @@ py -3.13 -m venv .venv
 pip install -r requirements.txt
 ```
 
+### Linux
+
+#### Opció automàtica (Recomanada)
+
+Executa l'script d'instal·lació assistida, que s'encarrega d'instal·lar els paquets del sistema (Debian/Ubuntu/Fedora), crear l'entorn virtual, instal·lar les dependències de Python, afegir l'usuari al grup `input` (per a Wayland) i crear la drecera d'escriptori:
+
+```bash
+chmod +x install_linux.sh
+./install_linux.sh
+```
+
+> **Important (Wayland):** Si fas servir Wayland, cal que tanquis la sessió i tornis a entrar perquè el grup `input` s'apliqui correctament.
+
+#### Opció manual
+
+Si prefereixes fer la instal·lació pas a pas:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+##### Paquets del sistema per a X11:
+
+```bash
+# Debian/Ubuntu
+sudo apt install xdotool xclip libportaudio2 python3-venv python3-dev build-essential
+
+# Fedora
+sudo dnf install xdotool xclip portaudio python3-devel gcc
+```
+
+##### Paquets del sistema per a Wayland (GNOME):
+
+Wayland no permet llegir tecles globals ni injectar text directament com X11. Calen eines del sistema i permisos per llegir `/dev/input`:
+
+```bash
+# Debian/Ubuntu
+sudo apt install ydotool wl-clipboard wtype libportaudio2 python3-venv python3-dev build-essential
+
+# Fedora
+sudo dnf install ydotool wl-clipboard wtype portaudio python3-devel gcc
+
+# Permisos per als hotkeys globals (evdev)
+sudo usermod -aG input $USER
+# Tanca la sessió i torna a entrar perquè el canvi de grup s'apliqui.
+```
+
+> El grup `input` dona accés de lectura a tots els dispositius d'entrada. Si no
+> el vols fer servir, crea una regla udev que doni accés només a `/dev/input/event*`.
+
+El dimoni de `ydotool` ha d'estar en marxa. Segons la distribució pot ser una
+unitat d'usuari o un servei del sistema:
+
+```bash
+systemctl --user enable --now ydotool   # o ydotoold, segons el paquet
+# Si no hi ha cap unitat de systemd:
+ydotoold &
+```
+
+Si `ydotoold` escolta en un socket no estàndard, exporta `YDOTOOL_SOCKET`.
+
 La primera execució descarrega el model a `models/` (~500 MB).
 
+## Comprovació de l'entorn
+
+Abans d'obrir la interfície, comprova que hi hagi tot el que cal:
+
+```bash
+source .venv/bin/activate
+python check_linux.py
+```
+
+El script revisa la sessió detectada, les eines del sistema (`xdotool`,
+`ydotool`, `wtype`, `wl-clipboard`), els permisos de `/dev/input`, el dimoni
+`ydotoold`, el porta-retalls, l'àudio i el model. Surt amb codi 0 si no hi ha
+cap error. Per forçar un backend:
+
+```bash
+python check_linux.py --backend wayland
+python check_linux.py --backend x11
+```
+
+També pot provar les dues peces que més fallen, sense obrir la GUI:
+
+```bash
+# Espera 15 segons que premis la tecla de dictat configurada.
+python check_linux.py --hotkey-test
+
+# Compte enrere de 5 segons i escriu el text al camp que tingui el focus.
+# Fes clic abans en un editor de text buit.
+python check_linux.py --type-test
+```
+
+### Validació manual a GNOME Wayland
+
+1. `python check_linux.py --backend wayland` ha de sortir sense errors.
+2. `--hotkey-test` ha de detectar la tecla (F8 per defecte).
+3. `--type-test` ha d'escriure el text a l'editor on hagis fet clic.
+4. Obre `python gui.py`, comprova la icona de la safata i dicta una frase en un
+   editor, al navegador i a la barra d'URLs.
+5. Prova accents i emojis amb `insert_mode = "paste"` (Wayland no garanteix
+   `type` amb caràcters fora de la distribució de teclat).
+6. Prem la tecla de desfer (F9 per defecte) just després d'una inserció.
+7. Obre una segona còpia: ha d'avisar que ja n'hi ha una en marxa.
+
+Si l'aplicació no apareix a la safata, GNOME necessita l'extensió
+**AppIndicator and KStatusNotifierItem Support**; sense ella la finestra es
+tanca en lloc d'amagar-se.
+
 ## Ús
+
+### Llançar l'aplicació
+
+**Linux (X11 o Wayland):**
+
+L'aplicació està disponible al menú d'aplicacions (cerca `CustormWispeFlow`). O bé executa:
+
+```bash
+./start_dictate.sh
+```
+
+Si vols forçar el backend: `CWF_BACKEND=x11 ./start_dictate.sh` o `CWF_BACKEND=wayland ./start_dictate.sh`.
+
+**Windows:**
 
 Doble clic a `start_dictate.bat`, o bé:
 
@@ -311,12 +436,12 @@ python dictate.py --file samples\ca_03.wav --spell    # comença amb deletreig
 ## Com funciona
 
 ```
-F8 (polling GetAsyncKeyState)
+F8 (hotkey global: GetAsyncKeyState a Windows, pynput a X11, evdev a Wayland)
   → micròfon 16 kHz + retall de silenci
   → faster-whisper (model per idioma, int8)
   → diccionari personal
   → ordres de veu (puntuació / deletreig)
-  → SendInput Unicode  o  porta-retalls + Ctrl+V
+  → SendInput/xdotool/ydotool  o  porta-retalls + Ctrl+V
 ```
 
 `SendInput` escriu caràcter a caràcter i respecta el cursor. Per a textos llargs
@@ -332,6 +457,15 @@ El que ja s'havia escrit es pot desfer amb `F9` o `Ctrl+Z`.
 
 - **Finestres elevades**: `SendInput` des d'un procés normal no hi arriba. Posa
   `insert_mode = "paste"` si has de dictar en una consola d'Administrador.
+- **Linux X11**: cal `xdotool` per inserir text i `xclip`/`xsel` per al
+  porta-retalls. Els caràcters Unicode depenen de la configuració del teclat.
+- **Linux Wayland**: cal `ydotool` (o `wtype`) i `wl-clipboard`. Els hotkeys
+  necessiten `evdev` i permisos de lectura a `/dev/input` (grup `input` o una
+  regla udev). El guard de focus no està disponible: no es pot saber quina
+  finestra té el focus.
+- **Wayland i Unicode**: `ydotool type` depèn de la distribució de teclat. Per a
+  accents, emojis o caràcters especials fes servir `insert_mode = "paste"`, que
+  passa pel porta-retalls.
 - **Apps que ignoren Ctrl+V** o tenen handlers propis poden fallar amb el mode
   `paste`; prova `type`.
 - **Latència**: ~2 s per frase de 7 s en aquest N100. És usable, no instantani.

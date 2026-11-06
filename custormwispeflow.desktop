@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=CustormWispeFlow
+Comment=Dictat local per veu en català, castellà i anglès
+Exec=bash -c "cd %k && ./start_dictate.sh"
+Icon=accessories-text-editor
+Terminal=false
+Type=Application
+Categories=Utility;Accessibility;Qt;
+Keywords=dictation;speech;voice;whisper;catalan;
+StartupNotify=true
+Actions=Config;
+
+[Desktop Action Config]
+Name=Configuració
+Exec=bash -c "cd %k && ./start_dictate.sh"

@@ -12,12 +12,9 @@ import time
 from dataclasses import dataclass
 from typing import Callable
 
+from app.backends import backend
 from app.insert import (
-    VK_CONTROL,
-    VK_MENU,
-    VK_SHIFT,
     foreground_window as get_foreground_window,
-    key_is_down,
     send_backspaces,
     send_ctrl_z,
 )
@@ -41,7 +38,7 @@ class Undoer:
         foreground: Callable[[], int] = get_foreground_window,
         ctrl_z: Callable[[], None] = send_ctrl_z,
         backspaces: Callable[[int], None] = send_backspaces,
-        modifiers_down: Callable[[int], bool] = key_is_down,
+        modifiers_down: Callable[[], bool] = backend.modifiers_down,
         max_backspaces: int = MAX_BACKSPACES,
     ) -> None:
         self.foreground = foreground
@@ -71,7 +68,6 @@ class Undoer:
     def _wait_modifiers(self, timeout: float = 1.0) -> None:
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
-            if not any(self.modifiers_down(vk)
-                       for vk in (VK_CONTROL, VK_SHIFT, VK_MENU)):
+            if not self.modifiers_down():
                 return
             time.sleep(0.02)

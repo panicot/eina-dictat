@@ -1,0 +1,12 @@
+Github/
+__pycache__/
+.venv/
+.idea/
+.vscode/
+*.log
+*.jsonl
+models/
+logs/
+results/
+samples/
+.DS_Store
