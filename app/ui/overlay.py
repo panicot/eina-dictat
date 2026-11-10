@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+import json
 import math
+import os
+import shutil
+import subprocess
 import time
 
 from PySide6.QtCore import (
@@ -25,6 +29,30 @@ from PySide6.QtWidgets import QWidget
 from app.ui.theme import theme_manager
 
 
+OVERLAY_TITLE = "CWF Overlay"
+
+
+def _hypr_active() -> dict | None:
+    """Finestra amb focus a Hyprland, o None si no s'hi executa."""
+    if not os.environ.get("HYPRLAND_INSTANCE_SIGNATURE") or not shutil.which("hyprctl"):
+        return None
+    try:
+        out = subprocess.run(["hyprctl", "activewindow", "-j"],
+                             capture_output=True, text=True, timeout=1).stdout
+        return json.loads(out) if out.strip() else {}
+    except (OSError, ValueError, subprocess.TimeoutExpired):
+        return None
+
+
+def _hypr_focus(address: str) -> None:
+    try:
+        subprocess.run(["hyprctl", "dispatch",
+                        f'hl.dsp.focus({{ window = "address:{address}" }})'],
+                       capture_output=True, timeout=1)
+    except (OSError, subprocess.TimeoutExpired):
+        pass
+
+
 class OverlayWindow(QWidget):
     WIDTH = 370
     HEIGHT = 72
@@ -42,6 +70,7 @@ class OverlayWindow(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setAttribute(Qt.WA_ShowWithoutActivating, True)
         self.setFixedSize(self.WIDTH, self.HEIGHT)
+        self.setWindowTitle(OVERLAY_TITLE)
         self.setWindowOpacity(0.0)
         self._state = "idle"
         self._mode = "idle"
@@ -127,14 +156,29 @@ class OverlayWindow(QWidget):
     def _reveal(self) -> None:
         self._hide_timer.stop()
         self._position()
+        previous = _hypr_active()
+        if previous and previous.get("address") and not str(
+                previous.get("title", "")).startswith(OVERLAY_TITLE):
+            self._return_to = previous["address"]
         if not self.isVisible():
             self.setWindowOpacity(0.0)
             self.show()
+        if getattr(self, "_return_to", None):
+            # Hyprland dona el focus a qualsevol finestra nova: es retorna
+            # a la finestra on l'usuari estava escrivint.
+            for delay in (40, 150, 400, 900):
+                QTimer.singleShot(
+                    delay, lambda a=self._return_to: self._restore_focus(a))
         self._fade.stop()
         self._fade.setStartValue(self.windowOpacity())
         self._fade.setEndValue(1.0)
         self._fade.start()
         self._timer.start()
+
+    def _restore_focus(self, address: str) -> None:
+        current = _hypr_active()
+        if current and str(current.get("title", "")).startswith(OVERLAY_TITLE):
+            _hypr_focus(address)
 
     def _schedule_hide(self, ms: int) -> None:
         self._hide_timer.start(ms)
