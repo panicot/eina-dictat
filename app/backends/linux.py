@@ -965,6 +965,10 @@ def type_text(text: str, expected_hwnd: int | None = None) -> int:
         return 0
     if _session_is_wayland():
         # Wayland no permet consultar la finestra activa de forma fiable.
+        if not text.isascii():
+            # ydotool només coneix el teclat US: s'atura en silenci al primer
+            # accent (à, ç, ò...). El porta-retalls conserva tots els caràcters.
+            return _wayland_paste_text(text, restore_clipboard=True)
         return _wayland_type_text(text)
     _require_x11("Inserció")
     return _x11_type_text(text, expected_hwnd)
